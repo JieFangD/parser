@@ -26,6 +26,7 @@ public:
    bool handleInput();
 	void connect();
    void dfsTraversal(CirGate*, string, int, bool);
+	bool trueGate(CirGate*, CirGate*);
 
 private:
    vector<string>    	sortGate;

@@ -90,7 +90,7 @@ bool CirMgr::handleInput(){
 			}
 		}
       else if (word[0] == 'N'){
-         //cout << word << endl;
+         cout << word << endl;
          CirGate* newGate = new CirGate;
 			newGate->Type = word;
 			if (word == "NOT1"){
@@ -237,7 +237,6 @@ bool CirMgr::handleInput(){
 	for (unsigned i=0; i<in.size(); i++){
 		dfsTraversal(AllWire[in[i]], "", 0, true);
 	}
-
    return true;
 }
 
@@ -306,6 +305,60 @@ CirMgr::printOut() const
 	cout << "Outputs: ";
 	for(unsigned i=0; i<out.size(); i++) cout << out[i] << ' ';
 	cout << endl;
+}
+
+bool trueGate(CirGate* from, CirGate* to){
+	if (to->Type == "NOT1")
+		return true;
+	else if (to->Type == "NOR2"){
+		if (to->faninL->time == to->faninR->time){
+			if (to->faninL->value == 1 && to->faninR->value == 1)
+				return true;
+			else if (to->faninL->value == 0 && to->faninR->value == 0)
+				return true;
+			else if (to->faninL->value == 1 && to->faninR->value == 0 && to->faninL == from)
+				return true;
+			else if (to->faninL->value == 0 && to->faninR->value == 1 && to->faninR == from)
+				return true;			
+		}		
+		else if (to->faninL->time > to->faninR->time){
+			if (to->faninR->value == 1 && to->faninR == from)
+				return true;
+			else if (to->faninR->value == 0 && to->faninL == from)
+				return true;
+		}
+		else if (to->faninL->time < to->faninR->time){
+			if (to->faninL->value == 1 && to->faninL == from)
+				return true;
+			else if (to->faninL->value == 0 && to->faninR == from)
+				return true;
+		}
+	}
+	else if (to->Type == "NAND2"){
+		if (to->faninL->time == to->faninR->time){
+			if (to->faninL->value == 1 && to->faninR->value == 1)
+				return true;
+			else if (to->faninL->value == 0 && to->faninR->value == 0)
+				return true;
+			else if (to->faninL->value == 1 && to->faninR->value == 0 && to->faninR == from)
+				return true;
+			else if (to->faninL->value == 0 && to->faninR->value == 1 && to->faninL == from)
+				return true;			
+		}		
+		else if (to->faninL->time > to->faninR->time){
+			if (to->faninR->value == 1 && to->faninL == from)
+				return true;
+			else if (to->faninR->value == 0 && to->faninR == from)
+				return true;
+		}
+		else if (to->faninL->time < to->faninR->time){
+			if (to->faninL->value == 1 && to->faninR == from)
+				return true;
+			else if (to->faninL->value == 0 && to->faninL == from)
+				return true;
+		}
+	}
+	return false;
 }
 
 void CirMgr::dfsTraversal(CirGate* c, string s, int delay, bool left){	

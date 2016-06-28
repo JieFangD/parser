@@ -35,6 +35,8 @@ public:
    vector<CirGate*> fanout;
    CirGate*         faninL;
    CirGate*         faninR;
+	int 				  time;
+	int				  value;
 
 private:
    static unsigned  _gRef;
